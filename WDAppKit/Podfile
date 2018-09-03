@@ -1,0 +1,10 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '8.0'
+
+target 'WDAppKit' do
+  
+	pod 'FBSDKLoginKit'
+	pod 'Firebase/Core' #google 统计
+	pod 'AppsFlyerFramework' #统计
+
+end
