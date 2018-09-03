@@ -10,7 +10,8 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKCoreKit/FBSDKAppEvents.h>
 #import <AppsFlyerFramework/AppsFlyerLib/AppsFlyerTracker.h>
-@import Firebase;
+#import <Firebase.h>
+//@import Firebase;
 
 #import <Foundation/Foundation.h>
 
