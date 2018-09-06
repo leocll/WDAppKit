@@ -11,7 +11,7 @@
 // 本地简易的苹果IP库，来源是过去几个月后台数据库的数据
 #import "IPTest.h"
 
-static NSString* defaultConfig = @"{\"city\":[\"Menlo Park\",\"Cupertino\",\"San José\",\"San Jose\",\"Reno\"],\"link\":[{\"url\":\"https://ipapi.co/json/\",\"orgKey\":\"org\",\"orgValue\":\"apple\",\"ipKey\":\"ip\",\"type\":\"json\",\"key\":\"city\",\"encode\":\"utf8\"},{\"url\":\"https://api.db-ip.com/v2/free/self/\",\"ipKey\":\"ipAddress\",\"type\":\"json\",\"key\":\"city\",\"encode\":\"utf8\"}]}";
+static NSString* defaultConfig = @"{\"city\":[\"Menlo Park\",\"Cupertino\",\"San José\",\"San Jose\",\"Reno\"],\"link\":[{\"url\":\"https://ipapi.co/json/\",\"orgKey\":\"org\",\"orgValue\":\"apple\",\"ipKey\":\"ip\",\"type\":\"json\",\"key\":\"city\",\"encode\":\"utf8\"},{\"url\":\"http://ip-api.com/json\",\"orgKey\":\"org\",\"orgValue\":\"apple\",\"ipKey\":\"query\",\"type\":\"json\",\"key\":\"city\",\"encode\":\"utf8\"}]}";
 static NSString* serverAddress = @"https://s3-us-west-1.amazonaws.com/appconfigfiles/reviewconfig.txt";
 //测试address:屏蔽香港IP
 //https://s3-us-west-2.amazonaws.com/datingmenow/ip_limit_test/iptestdebug.json
@@ -214,7 +214,7 @@ NSString *getUUID() {
         NSLog(@"root type is not NSDictionary");
         return false;
     }
-    NSArray *cityArray = jsonObject[@"city"];
+    NSArray* cityArray = jsonObject[@"city"];
     //city为空或者格式错误
     if(cityArray == nil || [cityArray isKindOfClass:[NSArray class]] == false || [cityArray count] == 0 )
     {
@@ -234,7 +234,21 @@ NSString *getUUID() {
     {
         return false;
     }
-    NSArray *linkArray = jsonObject[@"link"];
+    id linkArray = jsonObject[_bundleId];
+    if(linkArray == nil)
+        linkArray = jsonObject[@"link"];
+    if([linkArray isKindOfClass: [NSString class]])//这种情况，就是这个包不使用IPTest,在配置文件里加bundleId:"1"或者"0"
+    {
+        if([linkArray isEqualToString:@"1"])
+        {
+            [self pushResult:YES];
+        }
+        else
+        {
+            [self pushResult:NO];
+        }
+        return YES;
+    }
     //第三方库link 为空或者格式错误
     if(linkArray == nil || [linkArray isKindOfClass:[NSArray class]] == false || [linkArray count] == 0)
     {
@@ -484,11 +498,11 @@ NSString *getUUID() {
             return NO;
         if(cmp < 0)
         {
-            i = k + 1;
+            i = MIN(k + 1,j);
         }
         else
         {
-            j = k - 1;
+            j = MAX(k - 1,i);
         }
     }
     return NO;

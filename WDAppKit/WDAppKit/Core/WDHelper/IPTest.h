@@ -24,7 +24,7 @@ typedef void (^IPTestCompletionHandler)(BOOL);
     BOOL _usingReviewFlag;
     BOOL _timeOut;
     
-    char* _blacks;
+    unsigned char* _blacks;
     int _blackCount;
 }
 @property(atomic,readwrite) BOOL result;
